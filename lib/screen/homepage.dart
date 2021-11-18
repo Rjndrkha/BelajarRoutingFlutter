@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:onlinemart/screen/add_product.dart';
 import 'package:onlinemart/screen/edit_product.dart';
 import 'dart:convert';
+import 'package:onlinemart/components/color.dart';
 
 import 'package:onlinemart/screen/product_detail.dart';
 
@@ -32,9 +33,7 @@ class HomePage extends StatelessWidget {
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(
-        title: const Text('Online Mart'),
-      ),
+      appBar: buildAppBar(),
       body: FutureBuilder(
           future: getProducts(),
           builder: (context, snapshot) {
@@ -100,8 +99,8 @@ class HomePage extends StatelessWidget {
                                                       builder: (context) =>
                                                           EditProduct(
                                                             product: snapshot
-                                                                    .data
-                                                                    ['data'][index],
+                                                                    .data[
+                                                                'data'][index],
                                                           )));
                                             },
                                             child: const Icon(Icons.edit)),
@@ -121,6 +120,33 @@ class HomePage extends StatelessWidget {
               return const Text('Data Error');
             }
           }),
+    );
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        color: kTextColor,
+        onPressed: () {},
+      ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.search),
+          // By default our  icon color is white
+          color: kTextColor,
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: Icon(Icons.shopping_cart),
+          // By default our  icon color is white
+          color: kTextColor,
+          onPressed: () {},
+        ),
+        SizedBox(width: kDefaultPaddin / 2)
+      ],
     );
   }
 }
