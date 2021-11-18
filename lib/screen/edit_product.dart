@@ -16,7 +16,7 @@ class EditProduct extends StatelessWidget {
   TextEditingController _hargaController = TextEditingController();
   TextEditingController _imgController = TextEditingController();
 
-  Future updateProduct() async {
+  Future saveProduct() async {
     final response = await http.put(
         Uri.parse(
             "http://127.0.0.1:8000/api/products" + product['id'].toString()),
@@ -86,7 +86,7 @@ class EditProduct extends StatelessWidget {
               ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
-                      updateProduct().then((value) {
+                      saveProduct().then((value) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
