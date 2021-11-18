@@ -1,6 +1,11 @@
+import 'package:onlinemart/screen/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:onlinemart/screen/add_product.dart';
+import 'package:onlinemart/screen/edit_product.dart';
 import 'dart:convert';
+
+import 'package:onlinemart/screen/product_detail.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -11,6 +16,7 @@ class HomePage extends StatelessWidget {
 
   Future getProducts() async {
     var response = await http.get(Uri.parse(url));
+    // ignore: avoid_print
     print(json.decode(response.body));
     return json.decode(response.body);
   }
@@ -19,6 +25,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     getProducts();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddProduct()));
+        },
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: const Text('Online Mart'),
       ),
@@ -29,50 +42,83 @@ class HomePage extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data['data'].length,
                   itemBuilder: (context, index) {
-                    return Container(
+                    return SizedBox(
                       height: 180,
                       child: Card(
                           elevation: 15,
                           child: Row(children: [
-                            Container(
-                              height: 120,
-                              width: 120,
-                              padding: EdgeInsets.all(5),
-                              child: Image.network(
-                                snapshot.data['data'][index]['image_url'],
-                                fit: BoxFit.cover,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProductDetail(
+                                              product: snapshot.data['data']
+                                                  [index],
+                                            )));
+                              },
+                              child: Container(
+                                height: 120,
+                                width: 120,
+                                padding: const EdgeInsets.all(5),
+                                child: Image.network(
+                                  snapshot.data['data'][index]['image_url'],
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Expanded(
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    snapshot.data['data'][index]['name'],
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(snapshot.data['data'][index]
-                                      ['description']),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Icon(Icons.edit),
-                                      Text(snapshot.data['data'][index]['harga']
-                                          .toString()),
-                                    ],
-                                  ),
-                                ],
+                              child: Container(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        snapshot.data['data'][index]['name'],
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(snapshot.data['data'][index]
+                                          ['description']),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EditProduct(
+                                                            product: snapshot
+                                                                    .data
+                                                                    ['data'][index],
+                                                          )));
+                                            },
+                                            child: const Icon(Icons.edit)),
+                                        Text(snapshot.data['data'][index]
+                                                ['harga']
+                                            .toString()),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           ])),
                     );
                   });
             } else {
-              return Text('Data Error');
+              return const Text('Data Error');
             }
           }),
     );
